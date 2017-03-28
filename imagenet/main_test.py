@@ -27,7 +27,7 @@ import argparse
 def parse():
     parser = argparse.ArgumentParser(description='Scattering on Imagenet')
     # Model options
-    parser.add_argument('--imagenetpath', default='/media/ssd/', type=str)
+    parser.add_argument('--imagenetpath', default='/media/ssd/dataset/', type=str)
     parser.add_argument('--nthread', default=4, type=int)
  
  
@@ -53,9 +53,9 @@ def parse():
                         help='number of GPUs to use for training')
     parser.add_argument('--gpu_id', default='0', type=str,
                         help='id(s) for CUDA_VISIBLE_DEVICES')
-    parser.add_argument('--scat', default=4, type=int,
+    parser.add_argument('--scat', default=3, type=int,
                         help='scattering scale, j=0 means no scattering')
-    parser.add_argument('--N', default=112, type=int,
+    parser.add_argument('--N', default=224, type=int,
                         help='size of the crop')
     parser.add_argument('--YCC', default=False, action="store_true",
                         help='True: YCC; False: RGB')
