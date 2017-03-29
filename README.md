@@ -9,10 +9,17 @@ The pyscatwave package can be found here https://github.com/edouardoyallon/pysca
 ### Imagenet
 We provide a pre-trained model similar to the one described in the paper. 
 
-To run the scattering+resnet:
-1) Download from  ED PUT LINK HERE
+To run the trained model of scattering+resnet on imagenet ILSVRC:
+0) Make sure you have downloaded at least the validation set of ILSVRC2012 and have it organized by class categories
+Note: due to problems with pytorch dataset constructors make sure your imagenet directory has no hidden files, or extra directories besides the 1000 ILSVRC categories.. otherwise all the images will be mislabeled
+1) Download the model file from  ED PUT LINK HERE
 2) Add this to the imagenet/ directory
-3) Run the script main_test.py to evaluate on the ILSVRC validation set
+3) Run the script main_test.py to evaluate on the ILSVRC validation set specifying --imagenetpath to point to your imagenet directory
+
+To train our model from scratch:
+0) make sure you have downloaded the ILSVRC training set and validation set and have it organized by class categories (see note above about extra directories)
+1) Run the main.py script making sure to modify the parameters as needed for your setup. Our basic model was trained on 2x 1080 GPUs. 
+
 
 To apply the SLE as a feature extractor:
 1) Download from ED PUT LINK
