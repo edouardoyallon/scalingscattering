@@ -29,25 +29,7 @@ def parse():
     # Model options
     parser.add_argument('--imagenetpath', default='/media/ssd/dataset/', type=str)
     parser.add_argument('--nthread', default=4, type=int)
- 
- 
-    # Training options
-    parser.add_argument('--batchSize', default=256, type=int)
-    parser.add_argument('--lr', default=0.1, type=float)
-    parser.add_argument('--epochs', default=100, type=int, metavar='N',
-                        help='number of total epochs to run')
-    parser.add_argument('--weightDecay', default=1e-4, type=float)
-    parser.add_argument('--epoch_step', default='[30,60,90]', type=str,
-                        help='json list with epochs to drop lr on')
-    parser.add_argument('--lr_decay_ratio', default=0.1, type=float)
     parser.add_argument('--resume', default='scatter_resnet_10_model.pt7', type=str)
- 
-    # Save options
-    parser.add_argument('--save', default='', type=str,
-                        help='save parameters and logs in this folder')
-    parser.add_argument('--frequency_save', default=1,
-                        type=int,
-                        help='Frequency at which one should save')
  
     parser.add_argument('--ngpu', default=1, type=int,
                         help='number of GPUs to use for training')
@@ -57,18 +39,9 @@ def parse():
                         help='scattering scale, j=0 means no scattering')
     parser.add_argument('--N', default=224, type=int,
                         help='size of the crop')
-    parser.add_argument('--YCC', default=False, action="store_true",
-                        help='True: YCC; False: RGB')
-    parser.add_argument('--max_samples', default=-1, type=int,
-                        help='-1: torch loader, otherwise small data loader')
     parser.add_argument('--model', default='scatresnet6_2', type=str,
                         help='name of define of the model in models')
- 
- 
-    # Display options
-    parser.add_argument('--frequency_print', default=1,
-                        type=int,
-                        help='Frequency at which one should save')
+    parser.add_argument('--batchSize', default=256, type=int)
     return parser
  
  
@@ -84,22 +57,14 @@ print('parsed options:', vars(opt))
 os.environ['CUDA_VISIBLE_DEVICES'] = opt.gpu_id
 torch.randn(8).cuda()
 os.environ['CUDA_VISIBLE_DEVICES'] = ''
-epoch_step = json.loads(opt.epoch_step)
  
 data_time = 1
  
  
 def main():
     model, params, stats = models.__dict__[opt.model](N=opt.N,J=opt.scat)
-     
-    def create_optimizer(opt, lr):
-        print('creating optimizer with lr = %f'% lr)
-        return torch.optim.SGD(params.values(), lr, 0.9, weight_decay=opt.weightDecay)
- 
-    optimizer = create_optimizer(opt, opt.lr)
  
     iter_test = get_iterator(False, opt)
-    iter_train = get_iterator(True,opt)
  
     scat = Scattering(M=opt.N, N=opt.N, J=opt.scat, pre_pad=False).cuda()
  
@@ -111,7 +76,6 @@ def main():
         state_dict = torch.load(resumeFile)
         
         model.load_state_dict(state_dict['state_dict']) 
-        optimizer.load_state_dict(state_dict['optimizer'])
         print('model was restored from epoch:',epoch)
  
     print('\nParameters:')
@@ -143,25 +107,6 @@ def main():
         y = torch.nn.parallel.data_parallel(model, inputs, np.arange(opt.ngpu).tolist())
         return F.cross_entropy(y, targets), y
  
- 
-    def log(t, state):
-        if(t['epoch']>0 and t['epoch']%opt.frequency_save==0):
-            torch.save(dict(params={k: v.data.cpu() for k, v in params.iteritems()},
-                        stats=stats,
-                        optimizer=state['optimizer'].state_dict(),
-                        epoch=t['epoch']),
-                   open(os.path.join(opt.save, 'epoch_%i_model.pt7' % t['epoch']), 'w'))
-            torch.save( dict(latest_file=os.path.join(opt.save, 'epoch_%i_model.pt7' % t['epoch'])
-                            ),
-                        open(os.path.join(opt.save, 'latest.pt7'), 'w'))
- 
-        z = vars(opt).copy()
-        z.update(t)
-        logname = os.path.join(opt.save, 'log.txt')
-        with open(logname, 'a') as f:
-            f.write('json_stats: ' + json.dumps(z) + '\n')
-        print(z)
- 
     def on_sample(state):
         global data_time
         data_time = timer_data.value()
@@ -186,8 +131,8 @@ def main():
             txt = 'Train:'
         else:
             txt = 'Test'
-        if(state['t']%opt.frequency_print==0 and state['t']>0):
-            print('%s [%i,%i/%i] ; loss: %.3f (%.3f) ; acc5: %.2f (%.2f) ; acc1: %.2f (%.2f) ; data %.3f ; time %.3f' %
+        
+        print('%s [%i,%i/%i] ; loss: %.3f (%.3f) ; acc5: %.2f (%.2f) ; acc1: %.2f (%.2f) ; data %.3f ; time %.3f' %
                   (txt, state['epoch'],state['t']%len(state['iterator']),
                    len(state['iterator']),
                    state['loss'].data[0],
@@ -210,14 +155,8 @@ def main():
         meter_loss.reset()
         timer_train.reset()
  
- 
-        state['iterator'] = iter_train
- 
         epoch = state['epoch'] + 1
-        if epoch in epoch_step:
-            lr = state['optimizer'].param_groups[0]['lr']
-            state['optimizer'] = create_optimizer(opt, lr * opt.lr_decay_ratio)
- 
+        
     def on_end_epoch(state):
         train_loss = meter_loss.value()
         train_acc = classacc.value()
@@ -228,16 +167,6 @@ def main():
  
         engine.test(h, iter_test)
  
-        log({
-            "train_loss": train_loss[0],
-            "train_acc": train_acc,
-            "test_loss": meter_loss.value()[0],
-            "test_acc": classacc.value(),
-            "epoch": state['epoch'],
-            "n_parameters": n_parameters,
-            "train_time": train_time,
-            "test_time": timer_test.value(),
-        }, state)
  
  
  
