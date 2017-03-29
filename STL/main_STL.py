@@ -19,11 +19,7 @@ import torch.nn.functional as F
 
 
 import torchvision.datasets as datasets
-#import stl10 as datasets
 
-
-
-#from scattering import Scattering
 from scatwave.scattering import Scattering
 import torchnet as tnt
 import models
