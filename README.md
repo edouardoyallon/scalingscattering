@@ -17,6 +17,7 @@ To run the trained model of scattering+resnet on imagenet ILSVRC:
 3) Add this to the imagenet/ directory
 4) Run the script main_test.py to evaluate on the ILSVRC validation set specifying --imagenetpath to point to your imagenet directory
 
+Training scripts for imagenet and SLE feature extractor will be added soon
 
 ### STL-10
 Simply run python main_STL.py script in the STL directory
