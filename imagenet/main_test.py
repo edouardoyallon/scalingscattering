@@ -65,17 +65,6 @@ def parse():
                         help='name of define of the model in models')
  
  
-    # Option relative to the cache
-    parser.add_argument('--cache_test', default=False, action="store_true",
-                        help='Do we use the dataloader with the cache for test?')
-    parser.add_argument('--cache_train', default=False, action="store_true",
-                        help='Do we use the dataloader with the cache for train?')
-    parser.add_argument('--folder_cache', default='/users/data/oyallon/Desktop/git_thigns/cache', type=str,
-                        help='Folder to the cache')
-    parser.add_argument('--max_epoch_cache', default=1,
-                        type=int,
-                        help='Number of epoch that were cached that we should use')
- 
     # Display options
     parser.add_argument('--frequency_print', default=1,
                         type=int,
@@ -101,9 +90,6 @@ data_time = 1
  
  
 def main():
-  #  if not os.path.exists(opt.save):
-   #     os.mkdir(opt.save)
- 
     model, params, stats = models.__dict__[opt.model](N=opt.N,J=opt.scat)
      
     def create_optimizer(opt, lr):
@@ -224,10 +210,6 @@ def main():
         meter_loss.reset()
         timer_train.reset()
  
-        # OLALALALA this is crazy to do
-        if(opt.cache_train):
-            iter_train.dataset.root = os.path.join(opt.folder_cache, str(state['epoch']%opt.max_epoch_cache), 'train')
-            print(iter_train.dataset.root)
  
         state['iterator'] = iter_train
  
