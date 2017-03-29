@@ -1,5 +1,5 @@
 ## Scaling The Scattering Transform : Deep Hybrid Networks
-This repository contains the experiments found in the paper: https://arxiv.org/pdf/1703.08961.pdf
+This repository contains the experiments found in the paper: https://arxiv.org/abs/1703.08961
 <img src="https://s-media-cache-ak0.pinimg.com/564x/d4/22/b5/d422b5ca88c7a0d1035475c216e09c02.jpg" width="300">
 ### Requirements
 In order to run our experiments you will need at minimum the following python packages: pytorch,opencv,pyscatwave package.
