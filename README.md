@@ -2,7 +2,7 @@
 This repository contains the experiments found in the paper: https://arxiv.org/pdf/1703.08961.pdf
 
 ### Requirements
-In order to run our experiments you will need the following: pytorch,opencv,pyscatwave package.
+In order to run our experiments you will need at minimum the following python packages: pytorch,opencv,pyscatwave package.
 The simplest way to install pytorch and opencv is through anaconda. We recommend python 2.7 + anaconda.
 The pyscatwave package can be found here https://github.com/edouardoyallon/pyscatwave
 
