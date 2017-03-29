@@ -12,7 +12,7 @@ We provide a pre-trained model similar to the one described in the paper.
 To run the trained model of scattering+resnet on imagenet ILSVRC:
 
 1) Make sure you have downloaded at least the validation set of ILSVRC2012 and have it organized by class categories
-Note: due to problems with pytorch dataset constructors make sure your imagenet directory has no hidden files, or extra directories besides the 1000 ILSVRC categories.. otherwise all the images will be mislabeled
+*Note*: due to problems with pytorch dataset constructors make sure your imagenet directory has no hidden files, or extra directories besides the 1000 ILSVRC categories.. otherwise all the images will be mislabeled
 2) Download the model file from  ED PUT LINK HERE
 3) Add this to the imagenet/ directory
 4) Run the script main_test.py to evaluate on the ILSVRC validation set specifying --imagenetpath to point to your imagenet directory
