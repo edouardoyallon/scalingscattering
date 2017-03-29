@@ -93,14 +93,11 @@ class ResNet(nn.Module):
         self.nspace = N / (2 ** J)
         self.nfscat = (1 + 8 * J + 8 * 8 * J * (J - 1) / 2)
         self.bn0 = nn.BatchNorm2d(self.nfscat*3,eps=1e-5,affine=False)
-       # self.bn0_1 = nn.BatchNorm2d(self.ichannels, affine=True)
-      #  self.conv0 = nn.Conv2d(self.nfscat,self.ichannels,kernel_size=1,stride=1,padding=0)
         self.conv1 = nn.Conv2d(self.nfscat*3,self.ichannels, kernel_size=3, stride=1, padding=1,
                                bias=False)
         self.bn1 = nn.BatchNorm2d(self.ichannels)
         self.relu = nn.ReLU(inplace=True)
         
-     #   self.layer1 = self._make_layer(block, 16*k, n)
         self.layer2 = self._make_layer(block, 32*k, n)
         self.layer3 = self._make_layer(block, 64*k, n,stride=2)
         self.avgpool = nn.AvgPool2d(12)
@@ -135,16 +132,12 @@ class ResNet(nn.Module):
     def forward(self, x):
         x = x.view(x.size(0), 3*self.nfscat, self.nspace, self.nspace)
         x = self.bn0(x)
-  #      x = self.conv0(x)
-      #  x=self.bn0_1(x)
-   #     x=self.relu(x)
-      #  x=x.view(-1,3*self.ichannels,self.nspace,self.nspace)
         
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
         
-       # x = self.layer1(x)
+
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.avgpool(x)
@@ -193,9 +186,11 @@ def resnet16_1_scat_STL(N,J):
     return resnet16_scat(J,N,2,1)
     
 def resnet16_scat(J,N,n,k):
-    """Constructs a ResNet-18 model.
-    Args:
-        pretrained (bool): If True, returns a model pre-trained on ImageNet
+    """Constructs a Scat ResNet
+      N - crop size
+      J - scattering scale
+      k - width factor
+      n - number of blocks
     """
     model = ResNet(BasicBlock,J,N,k,n)
     
