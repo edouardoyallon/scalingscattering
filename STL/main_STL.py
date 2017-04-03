@@ -59,7 +59,7 @@ def parse():
                         help='scattering scale, j=0 means no scattering')
     parser.add_argument('--N', default=96, type=int,
                         help='size of the crop')
-    parser.add_argument('--model', default='resnet16_8_scat_STL_2', type=str,
+    parser.add_argument('--model', default='resnet16_8_scat_STL', type=str,
                         help='name of define of the model in models')
     parser.add_argument('--randomcrop_pad', default=8, type=int)
     parser.add_argument('--fold', default=0, type=int)
