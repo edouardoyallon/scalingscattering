@@ -132,7 +132,7 @@ def main():
         else:
             txt = 'Test'
         
-        print('%s [%i,%i/%i] ; loss: %.3f (%.3f) ; acc5: %.2f (%.2f) ; acc1: %.2f (%.2f) ; data %.3f ; time %.3f' %
+        print('%s [%i,%i/%i] ; loss: %.3f (%.3f) ; err5: %.2f (%.2f) ; err1: %.2f (%.2f) ; data %.3f ; time %.3f' %
                   (txt, state['epoch'],state['t']%len(state['iterator']),
                    len(state['iterator']),
                    state['loss'].data[0],
